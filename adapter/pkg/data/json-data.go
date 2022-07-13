@@ -3,15 +3,15 @@ package data
 type JSONDocument struct {
 }
 
-func (doc JSONDocument) ConvertToXML() string {
+func (doc *JSONDocument) ConvertToXML() string {
 	return "<xml></xml>"
 }
 
 type JSONDocumentAdapter struct {
-	jsonDocument *JSONDocument
+	jsonDocument JSONDocument
 }
 
-func (adapter JSONDocumentAdapter) SendXMLData() {
+func (adapter *JSONDocumentAdapter) SendXMLData() {
 	adapter.jsonDocument.ConvertToXML()
 	println("отправка XML данных")
 }
