@@ -9,16 +9,16 @@ type Server struct {
 }
 
 func NewServer() Computer {
-	return Server{
+	return &Server{
 		Type:   ServerType,
 		Core:   16,
 		Memory: 256,
 	}
 }
-func (pc Server) GetType() string {
+func (pc *Server) GetType() string {
 	return pc.Type
 }
 
-func (pc Server) PrintDetails() {
+func (pc *Server) PrintDetails() {
 	fmt.Printf("%s Core:[%d] Mem:[%d]\n", pc.Type, pc.Core, pc.Memory)
 }
