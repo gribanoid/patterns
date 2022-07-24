@@ -1,6 +1,6 @@
 package types
 
-import "patterns/bridge/pkg/base"
+import "patterns/structurial/bridge/pkg/base"
 
 type MacPC struct {
 	scanner base.Scanner

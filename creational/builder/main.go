@@ -1,6 +1,6 @@
 package main
 
-import "patterns/builder/pkg"
+import "patterns/creational/builder/pkg"
 
 func main() {
 	asusCollector := pkg.GetCollector("asus")

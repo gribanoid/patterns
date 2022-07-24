@@ -1,6 +1,6 @@
 package main
 
-import "patterns/composite/pkg"
+import "patterns/structurial/composite/pkg"
 
 var (
 	cpu1        = pkg.CPU{Name: "CP-1", Description: "Процессор 1"}

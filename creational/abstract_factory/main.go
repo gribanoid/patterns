@@ -1,6 +1,6 @@
 package main
 
-import "patterns/abstract_factory/pkg"
+import "patterns/creational/abstract_factory/pkg"
 
 var brands = []string{"asus", "hp", "huawei"}
 

@@ -1,6 +1,8 @@
 package main
 
-import "patterns/bridge/pkg/types"
+import (
+	"patterns/structurial/bridge/pkg/types"
+)
 
 var (
 	/*scanners*/

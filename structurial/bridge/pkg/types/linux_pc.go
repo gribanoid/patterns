@@ -1,7 +1,7 @@
 package types
 
 import (
-	"patterns/bridge/pkg/base"
+	"patterns/structurial/bridge/pkg/base"
 )
 
 type LinuxPC struct {

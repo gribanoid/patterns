@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"patterns/decorator/pkg"
+	"patterns/structurial/decorator/pkg"
 )
 
 var (

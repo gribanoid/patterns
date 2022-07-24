@@ -1,6 +1,6 @@
 package main
 
-import "patterns/adapter/pkg/data"
+import "patterns/structurial/adapter/pkg/data"
 
 func main() {
 	json := new(data.JSONDocumentAdapter)

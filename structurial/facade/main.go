@@ -1,6 +1,6 @@
 package main
 
-import "patterns/facade/pkg"
+import "patterns/structurial/facade/pkg"
 
 var (
 	bank = pkg.Bank{

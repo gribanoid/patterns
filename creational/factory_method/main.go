@@ -1,6 +1,6 @@
 package main
 
-import "patterns/factory_method/pkg"
+import "patterns/creational/factory_method/pkg"
 
 var types = []string{pkg.NotebookType, pkg.PersonalComputerType, pkg.ServerType, "mono block"}
 
