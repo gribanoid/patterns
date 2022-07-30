@@ -16,11 +16,12 @@ func main() {
 		if time.Now().Second()%2 == 1 {
 			return "", errors.New("ошибка: нечетная секунда")
 		}
+		time.Sleep(time.Millisecond * 150) // имитируем работу
 		return "успех: четная секунда", nil
 	})
-	circuitBreaker := Breaker(circuit, 5)
+	wrapped := Breaker(circuit, 3)
 	for {
-		res, err := circuitBreaker(context.TODO())
+		res, err := wrapped(context.TODO())
 		if ServiceUnreachable == err {
 			fmt.Println(err)
 			break
@@ -47,10 +48,11 @@ func Breaker(circuit Circuit, failureThreshold uint) Circuit {
 		d := consecutiveFailures - int(failureThreshold)
 
 		if d >= 0 {
-			shouldRetryAt := lastAttempt.Add(time.Second * 2 << d) //  (2 seconds) * (2^d)
+			shouldRetryAt := lastAttempt.Add(time.Microsecond * 1 << d) //  (2 seconds) * (2^d)
 			if !time.Now().After(shouldRetryAt) {
 				return "", ServiceUnreachable
 			}
+			fmt.Println("Даем программе еще один шанс")
 		}
 
 		m.RUnlock()
