@@ -1,13 +1,106 @@
 package main
 
-import "context"
+import (
+	"context"
+	"errors"
+	"fmt"
+	"sync"
+	"time"
+)
 
 func main() {
+	circuit := Circuit(func(ctx context.Context) (string, error) {
+		fmt.Println("функия Circuit была вызвана")
+		if time.Now().Second()%2 == 1 {
+			return "", errors.New("ошибка: нечетная секунда")
+		}
+		time.Sleep(time.Millisecond * 150) // имитируем работу
+		return "успех: четная секунда", nil
+	})
+	wrapped1 := DebounceFirst(circuit, time.Millisecond*500) // DebounceFirst
+	for i := 0; i < 3; i++ {
+		res, err := wrapped1(context.TODO())
+		fmt.Printf("DebounceFirst res:[%s], err:[%v]\n", res, err)
+	}
+	time.Sleep(time.Second * 1)
+	res, err := wrapped1(context.TODO())
+	fmt.Printf("DebounceFirst res:[%s], err:[%v]\n", res, err)
 
+	/*wrapped2 := DebounceLast(circuit, time.Millisecond*500) // DebounceLast
+	for i := 0; i < 3; i++ {
+		res, err = wrapped2(context.Background())
+		fmt.Printf("DebounceLast res:[%s], err:[%v]\n", res, err)
+	}
+	time.Sleep(time.Second * 1)
+	res, err = wrapped2(context.Background())
+	fmt.Printf("DebounceLast res:[%s], err:[%v]\n", res, err)*/
 }
 
 type Circuit func(ctx context.Context) (string, error)
 
-func myFunction() {
+func DebounceFirst(circuit Circuit, d time.Duration) Circuit {
+	var threshold time.Time
+	var result string
+	var err error
+	var m sync.Mutex
 
+	return func(ctx context.Context) (string, error) {
+		m.Lock()
+		defer func() {
+			threshold = time.Now().Add(d)
+			m.Unlock()
+		}()
+		if time.Now().Before(threshold) {
+			return result, err
+		}
+		result, err = circuit(ctx)
+		return result, err
+	}
 }
+
+/*func DebounceLast(circuit Circuit, d time.Duration) Circuit {
+	var threshold time.Time = time.Now()
+	var ticker *time.Ticker
+	var result string
+	var err error
+	var once sync.Once
+	var m sync.Mutex
+
+	return func(ctx context.Context) (string, error) {
+		m.Lock()
+		defer m.Unlock()
+
+		threshold = time.Now().Add(d)
+		once.Do(func() {
+			ticker = time.NewTicker(time.Millisecond * 100)
+
+			go func() {
+				defer func() {
+					m.Lock()
+					ticker.Stop()
+					once = sync.Once{}
+					m.Unlock()
+				}()
+			}()
+
+			for {
+				select {
+				case <-ticker.C:
+					m.Lock()
+					if time.Now().After(threshold) {
+						result, err = circuit(ctx)
+						m.Unlock()
+						return
+					}
+					m.Unlock()
+				case <-ctx.Done():
+					m.Lock()
+					result, err = "", ctx.Err()
+					m.Unlock()
+					return
+				}
+			}
+		})
+		return result, err
+	}
+}*/
